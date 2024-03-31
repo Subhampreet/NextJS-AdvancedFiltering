@@ -6,9 +6,11 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
+import { useQuery } from '@tanstack/react-query';
 import { ChevronDown, Filter } from 'lucide-react';
 import Image from 'next/image';
 import { useState } from 'react';
+import axios from "axios"
 
 const SORT_OPTIONS = [
   { name: 'None', value: 'none' },
@@ -20,6 +22,13 @@ export default function Home() {
   const [filter, setFilter] = useState({
     sort: 'none',
   });
+
+  const {} = useQuery({
+    queryKey: ["products"],
+    queryFn: async () => {
+      const {} = await axios.post<QueryResult>()
+    }
+  })
 
   return (
     <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
