@@ -22,6 +22,13 @@ const SORT_OPTIONS = [
   { name: 'Price: High to Low', value: 'price-desc' },
 ] as const;
 
+const SUBCATEGORIES = [
+  { name : 'T-Shirts', selected: true, href: '#'},
+  { name : 'Hoodies', selected: false, href: '#'},
+  { name : 'Sweatshirts', selected: false, href: '#'},
+  { name : 'Accessories', selected: false, href: '#'},
+]
+
 export default function Home() {
   const [filter, setFilter] = useState({
     sort: 'none',
@@ -84,8 +91,16 @@ export default function Home() {
 
       <section className='pb-24 pt-6'>
         <div className='grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4'>
-
-          <div></div>
+          {/* Filters */}
+          <div className='hidden lg:block'>
+            <ul className='space-y-4 border-b border-gray-200 pb-6 text-sm font-medium text-gray-900'>
+              {SUBCATEGORIES.map((category) => (
+                <li key={category.name}>
+                  <button disabled={!category.selected} className='disabled:cursor-not-allowed disabled:opacity-60'>{category.name}</button>
+                </li>
+              ))}
+            </ul>
+          </div>
 
           <ul className='lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8'>
             {products ?
