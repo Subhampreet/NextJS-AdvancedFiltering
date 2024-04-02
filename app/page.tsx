@@ -15,12 +15,26 @@ import { QueryResult } from '@upstash/vector';
 import type { Product as TProduct} from '@/db';
 import Product from '@/components/product/Product';
 import ProductSkeleton from '@/components/product/ProductSkeleton';
+import { Accordion, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { AccordionContent } from '@radix-ui/react-accordion';
 
 const SORT_OPTIONS = [
   { name: 'None', value: 'none' },
   { name: 'Price: Low to High', value: 'price-asc' },
   { name: 'Price: High to Low', value: 'price-desc' },
 ] as const;
+
+const COLORS_FILTERS = {
+  id: "color",
+  name: "Color",
+  options : [
+    {value : 'white', label : 'White'},
+    {value : 'beige', label : 'Beige'},
+    {value : 'blue', label : 'Blue'},
+    {value : 'green', label : 'Green'},
+    {value : 'purple', label : 'Purple'},
+  ] as const,
+}
 
 const SUBCATEGORIES = [
   { name : 'T-Shirts', selected: true, href: '#'},
@@ -48,7 +62,7 @@ export default function Home() {
     }
   })
 
-  console.log(products);
+  // console.log(products);
 
   return (
     <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -100,6 +114,27 @@ export default function Home() {
                 </li>
               ))}
             </ul>
+
+            <Accordion type="multiple" className="animate-none">
+              {/* Color */}
+              <AccordionItem value="color">
+                <AccordionTrigger className="py-3 text-sm text-gray-400 hover:text-gray-500" >
+                  <span className='font-medium text-gray-900'>Color</span>
+                </AccordionTrigger>
+                <AccordionContent className='pt-2 animate-none'>
+                  <ul className='space-y-4'>
+                    {
+                      COLORS_FILTERS.options.map((option, optionIdx) => (
+                        <li key={option.value} className='flex items-center'>
+                          <input type="checkbox" id={`color-${optionIdx}`} className='h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500' />
+                          <label htmlFor={`color-${optionIdx}`} className='ml-3 text-sm text-gray-600'>{option.label}</label>
+                        </li>
+                      ))
+                    }
+                  </ul>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
           </div>
 
           <ul className='lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8'>
