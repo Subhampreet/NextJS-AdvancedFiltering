@@ -1,4 +1,4 @@
-import {z} from zod;
+import {z} from 'zod';
 
 export const AVAILABLE_SIZES = ["S", "M", "L"] as const
 export const AVAILABLE_COLORS = [
