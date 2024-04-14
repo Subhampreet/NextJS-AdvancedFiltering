@@ -45,6 +45,7 @@ const SUBCATEGORIES = [
 
 export default function Home() {
   const [filter, setFilter] = useState({
+    
     sort: 'none',
   });
 
@@ -122,7 +123,7 @@ export default function Home() {
                   <span className='font-medium text-gray-900'>Color</span>
                 </AccordionTrigger>
                 <AccordionContent className='pt-2 animate-none'>
-                  <ul className='space-y-4'>
+                  <ul className='space-y-4 pb-4'>
                     {
                       COLORS_FILTERS.options.map((option, optionIdx) => (
                         <li key={option.value} className='flex items-center'>
