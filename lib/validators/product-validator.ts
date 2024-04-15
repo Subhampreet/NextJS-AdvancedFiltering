@@ -13,4 +13,6 @@ export const ProductFilterValidator = z.object({
     price: z.tuple([z.number(), z.number()])
 })
 
-export type ProductState = Omit<z.infer<typeof ProductFilterValidator>, "price">
+export type ProductState = Omit<z.infer<typeof ProductFilterValidator>, 'price'> & {
+    price: { isCustom: boolean; range: [number, number]}
+}

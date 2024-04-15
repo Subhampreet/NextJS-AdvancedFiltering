@@ -43,9 +43,13 @@ const SUBCATEGORIES = [
   { name : 'Accessories', selected: false, href: '#'},
 ]
 
+const DEFAULT_CUSTOM_PRICE = [0, 100] as [number, number]
+
 export default function Home() {
-  const [filter, setFilter] = useState({
-    
+  const [filter, setFilter] = useState<ProductState>({
+    color: ["beige","blue","green","purple","white"],
+    price: {isCustom: false, range: DEFAULT_CUSTOM_PRICE},
+    size: ['L', 'M', 'S'],
     sort: 'none',
   });
 
