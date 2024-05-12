@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 import { ChevronDown, Filter } from 'lucide-react';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import axios from "axios"
 import { QueryResult } from '@upstash/vector';
 import type { Product as TProduct} from '@/db';
@@ -98,6 +98,7 @@ export default function Home() {
   const onSubmit = () => refetch()
 
   const debouncedSubmit = debounce(onSubmit, 400)
+  const _debouncedSubmit = useCallback(debouncedSubmit, [])
 
   useEffect(() => {
     onSubmit()
@@ -124,7 +125,7 @@ export default function Home() {
       }))
     }
 
-    onSubmit()
+    _debouncedSubmit()
   }
 
   const minPrice = Math.min(filter.price.range[0], filter.price.range[1])
@@ -155,6 +156,8 @@ export default function Home() {
                       ...prev,
                       sort: option.value,
                     }));
+
+                    _debouncedSubmit()
                   }}
                 >
                   {option.name}
