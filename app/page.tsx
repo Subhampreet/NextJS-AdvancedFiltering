@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 import { ChevronDown, Filter } from 'lucide-react';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from "axios"
 import { QueryResult } from '@upstash/vector';
 import type { Product as TProduct} from '@/db';
@@ -18,6 +18,8 @@ import ProductSkeleton from '@/components/product/ProductSkeleton';
 import { Accordion, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { AccordionContent } from '@radix-ui/react-accordion';
 import { ProductState } from '@/lib/validators/product-validator';
+import { Slider } from '@/components/ui/slider';
+import debounce from "lodash.debounce"
 
 const SORT_OPTIONS = [
   { name: 'None', value: 'none' },
@@ -74,13 +76,16 @@ export default function Home() {
     sort: 'none',
   });
 
-  const {data: products} = useQuery({
+  const {data: products, refetch} = useQuery({
     queryKey: ["products"],
     queryFn: async () => {
       const {data} = await axios.post<QueryResult<TProduct>[]>(
         'http://localhost:3000/api/products', {
           filter: {
             sort: filter.sort,
+            color: filter.color,
+            price: filter.price.range,
+            size: filter.size
           }
         }
       )
@@ -89,6 +94,14 @@ export default function Home() {
   })
 
   // console.log(products);
+
+  const onSubmit = () => refetch()
+
+  const debouncedSubmit = debounce(onSubmit, 400)
+
+  useEffect(() => {
+    onSubmit()
+  },[filter])
 
   const applyArrayFilter = ({
     category, value
@@ -110,6 +123,8 @@ export default function Home() {
         [category]: [...prev[category], value]
       }))
     }
+
+    onSubmit()
   }
 
   const minPrice = Math.min(filter.price.range[0], filter.price.range[1])
@@ -282,7 +297,33 @@ export default function Home() {
                         <div>
                           {filter.price.isCustom? minPrice.toFixed(0) : filter.price.range[0].toFixed(0)} $ - {' '} {filter.price.isCustom ? maxPrice.toFixed(0) : filter.price.range[1].toFixed(0)} $
                         </div>
-                      </div>                      
+                      </div>   
+
+                      <Slider className={cn({
+                        'opacity-50' : !filter.price.isCustom,
+                      })}
+                      disabled={!filter.price.isCustom}
+                      onValueChange={(range) => {
+                        const [newMin, newMax] = range
+
+
+                        
+                        setFilter((prev) => ({
+                          ...prev,
+                          price: {
+                            isCustom: true,
+                            range: [newMin, newMax],
+                          }
+                        }))
+
+                        debouncedSubmit()
+                      }}
+                      value={filter.price.isCustom ? filter.price.range : DEFAULT_CUSTOM_PRICE}
+                      min={DEFAULT_CUSTOM_PRICE[0]}
+                      defaultValue={DEFAULT_CUSTOM_PRICE}
+                      max={DEFAULT_CUSTOM_PRICE[1]}
+                      step={5}
+                      />               
                     </li>
                   </ul>
                 </AccordionContent>
