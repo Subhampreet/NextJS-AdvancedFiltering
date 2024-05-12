@@ -20,6 +20,7 @@ import { AccordionContent } from '@radix-ui/react-accordion';
 import { ProductState } from '@/lib/validators/product-validator';
 import { Slider } from '@/components/ui/slider';
 import debounce from "lodash.debounce"
+import EmptyState from '@/components/product/EmptyState';
 
 const SORT_OPTIONS = [
   { name: 'None', value: 'none' },
@@ -135,7 +136,7 @@ export default function Home() {
     <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div className="flex items-baseline justify-between border-b border-gray-200 pb-6 pt-24">
         <h1 className="text-4xl font-bold tracking-tight text-gray-900">
-          High Quality cotton selection
+          deep^style / filtering 
         </h1>
         <div className="flex items-center">
           <DropdownMenu>
@@ -267,6 +268,8 @@ export default function Home() {
                                   range: [...option.value]
                                 }
                               }))
+
+                              _debouncedSubmit()
                             }}
                             checked={!filter.price.isCustom && filter.price.range[0] === option.value[0] && filter.price.range[1] === option.value[1]}
                             className='h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500' 
@@ -289,6 +292,8 @@ export default function Home() {
                                   range: [0,100]
                                 }
                               }))
+
+                              _debouncedSubmit()
                             }}
                             checked={filter.price.isCustom}
                             className='h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500' 
@@ -337,7 +342,7 @@ export default function Home() {
 
           {/* Product Grid */}
           <ul className='lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8'>
-            {products ?
+            {products && products.length === 0 ? ( <EmptyState /> ) : products ?
               products?.map((product) => (
                 <Product product={product.metadata!} />
               )) : new Array(12).fill(null).map((_,i) => <ProductSkeleton key={i} />)
